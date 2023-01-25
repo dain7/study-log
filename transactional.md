@@ -51,5 +51,3 @@ public void addUser(UserDTO dto) throws Exception {
 데이터의 일관성 및 동시성을 위해 MVCC을 사용하지 않음. (MVCC는 다중 사용자 데이터베이스 성능을 위한 기술로 데이터 조회시 LOCK을 사용하지 않고 데이터의 버전을 관리해 데이터의 일관성 및 동시성을 높이는 기술)
 트랜잭션이 완료될 때까지 SELECT 문장이 사용하는 모든 데이터에 SHARED LOCK이 걸리므로 다른 사용자는 그 영역에 해당되는 데이터에 대한 수정 및 입력이 불가능하다.
 - 문제 : Phantom Read 방지
-
-testtesttest
