@@ -27,3 +27,27 @@ begin, commit을 자동으로 수행해준다.
 특정 예외 발생시 rollback 하지 않는다
 ### rollbackFor
 특정 예외 발생시 rollback 한다
+
+# isolation (격리 레벨)
+```java
+@Transactional(isolation=Isolation.DEFAULT)
+public void addUser(UserDTO dto) throws Exception {
+	// 로직 구현
+}
+```
+### DEFAULT : 기본 격리 수준
+기본이며, DB의 Isolation Level을 따른다.
+### READ_UNCOMMITED (level 0) : 커밋되지 않는 데이터에 대한 읽기를 허용
+어떤 사용자가 a라는 데이터를 b라는 데이터로 변경하는 동안 다른 사용자는 b라는 아직 완료되지 않은 (Uncommited 혹은 Dirty) 데이터 b를 읽을 수 있다.
+- 문제 : Dirty Read가 발생
+### READ_COMMITED (level 1) : 커밋된 데이터에 대한 읽기 허용
+어떠한 사용자가 A라는 데이터를 B라는 데이터로 변경하는 동안 다른 사용자는 해당 데이터에 접근 할 수 없다.
+- 문제 : Dirty Read 방지
+### REPEATABLE_READ (level 2) : 동일 필드에 대해 다중 접근시 모두 동일한 결과를 보장
+트랜잭션이 완료될 때까지 SELECT 문장이 사용하는 모든 데이터에 대해 shared lock이 걸리므로 다른 사용자는 그 영역에 해당되는 데이터에 대한 수정이 불가능하다.
+선행 트랜잭션이 읽은 데이터는 트랜잭션이 종료될 때까지 후행 트랜잭션이 갱신하거나 삭제가 불가능하기 때문에 같은 데이터를 두 번 쿼리했을 때 일관성 있는 결과를 리턴한다.
+- 문제 : Non-Repeatable Read 방지
+### SERIALIZABLE (level 3) : 가장 높은 격리, 성능 저하의 우려가 있음
+데이터의 일관성 및 동시성을 위해 MVCC을 사용하지 않음. (MVCC는 다중 사용자 데이터베이스 성능을 위한 기술로 데이터 조회시 LOCK을 사용하지 않고 데이터의 버전을 관리해 데이터의 일관성 및 동시성을 높이는 기술)
+트랜잭션이 완료될 때까지 SELECT 문장이 사용하는 모든 데이터에 SHARED LOCK이 걸리므로 다른 사용자는 그 영역에 해당되는 데이터에 대한 수정 및 입력이 불가능하다.
+- 문제 : Phantom Read 방지
